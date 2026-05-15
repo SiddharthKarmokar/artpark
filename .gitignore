@@ -4,3 +4,6 @@ __pycache__/
 **/__pycache__/
 site/
 GenAI_DevOps_Intern_Technical_Test.pdf
+build/
+dist/
+*.egg-info/
