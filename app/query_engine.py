@@ -7,8 +7,8 @@ import json
 import logging
 from typing import Any
 
-from config import MAX_ROWS_TO_LLM
-from providers import LLMProvider
+from app.config import MAX_ROWS_TO_LLM
+from app.providers import LLMProvider
 
 log = logging.getLogger("query")
 

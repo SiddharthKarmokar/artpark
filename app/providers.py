@@ -13,7 +13,7 @@ from typing import Protocol
 
 import requests
 
-from config import HOSTED_API_KEY, HOSTED_MODEL, OLLAMA_MODEL, OLLAMA_URL, PROVIDER
+from app.config import HOSTED_API_KEY, HOSTED_MODEL, OLLAMA_MODEL, OLLAMA_URL, PROVIDER
 
 
 class LLMProvider(Protocol):
