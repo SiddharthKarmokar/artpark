@@ -76,7 +76,7 @@ The original codebase:
 * hardcoded invalid PostgreSQL credentials
 * initialized database tables during module import
 * failed during pytest collection
-* caused SQLite threading deadlocks during tests on Windows
+* caused DB threading deadlocks during tests on Windows
 
 ---
 
