@@ -1,7 +1,9 @@
 site_name: Financial Analytics Platform
 site_url: https://siddharthkarmokar.github.io/artpark/
-site_description: Internal platform engineering documentation for the Tabular Analytics system.
-site_author: Platform Engineering Team
+site_description: Internal platform engineering documentation for the ArtPark tabular analytics platform.
+site_author: Siddharth Karmokar
+
+docs_dir: docs
 
 theme:
   name: material
@@ -13,6 +15,7 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
+
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: indigo
@@ -20,26 +23,43 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+
   features:
     - navigation.tabs
     - navigation.sections
     - navigation.top
+    - navigation.instant
+    - content.code.copy
     - search.suggest
     - search.highlight
 
 markdown_extensions:
   - admonition
+
   - pymdownx.details
+
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+
   - pymdownx.tabbed:
       alternate_style: true
 
+  - pymdownx.highlight:
+      anchor_linenums: true
+
+  - pymdownx.inlinehilite
+
+  - pymdownx.snippets
+
+  - toc:
+      permalink: true
+
 plugins:
   - search
+
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -47,16 +67,31 @@ plugins:
           paths:
             - .
 
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/SiddharthKarmokar/artpark
+
+repo_url: https://github.com/SiddharthKarmokar/artpark
+repo_name: SiddharthKarmokar/artpark
+
 nav:
   - Home: index.md
-  - Architecture: architecture.md
-  - Runbook: runbook.md
-  - Deployment: deployment.md
-  - Observability: observability.md
-  - Data Quality: data-quality.md
-  - API Reference: api.md
-  - CI/CD: ci-cd.md
-  - Local Development: local-development.md
+
+  - Architecture:
+      - System Overview: architecture.md
+      - Data Quality: data-quality.md
+      - Observability: observability.md
+
+  - Operations:
+      - Deployment: deployment.md
+      - Runbook: runbook.md
+      - Local Development: local-development.md
+      - CI/CD: ci-cd.md
+
+  - API:
+      - API Reference: api.md
+
   - ADRs:
-    - 001 PostgreSQL Migration: adr/001-postgresql.md
-    - 002 Redis Caching: adr/002-redis.md
+      - 001 PostgreSQL Migration: adr/001-postgresql.md
+      - 002 Redis Caching: adr/002-redis.md
