@@ -3,7 +3,6 @@ import requests
 from typing import Protocol, Any, Dict
 import structlog
 from app.core.config import settings
-from app.models.schemas import QueryRequest
 
 log = structlog.get_logger("app.llm")
 

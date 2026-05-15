@@ -1,4 +1,3 @@
-import uuid
 import datetime
 from decimal import Decimal
 from sqlalchemy.orm import Session
