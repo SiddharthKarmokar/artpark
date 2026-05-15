@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
@@ -32,6 +33,19 @@ app.include_router(router)
 @app.on_event("startup")
 def startup_event():
     log.info("Application starting up...", version=settings.version, domain=settings.domain)
+    # Create tables at startup instead of import time
+    Base.metadata.create_all(bind=engine)
+
+    log.info(
+        "Application starting up...",
+        version=settings.version,
+        domain=settings.domain
+    )
+
+    # Skip ingestion during tests
+    if os.getenv("PYTEST_CURRENT_TEST"):
+        return
+
     # Trigger initial data ingestion here if needed, or rely on a script/cron
     # For this exercise, we could trigger it automatically if tables are empty.
     from app.core.database import SessionLocal

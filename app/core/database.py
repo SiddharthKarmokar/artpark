@@ -1,17 +1,33 @@
+from typing import Any
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import declarative_base, sessionmaker
+
 from app.core.config import settings
+
+engine_kwargs: dict[str, Any] = {
+    "pool_pre_ping": True,
+}
+
+# SQLite-specific settings for testing purpose only
+if settings.database_url.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {
+        "check_same_thread": False,
+    }
 
 engine = create_engine(
     settings.database_url,
-    pool_pre_ping=True,
-    pool_size=10,
-    max_overflow=20
+    **engine_kwargs,
 )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine,
+)
 
 Base = declarative_base()
+
 
 def get_db():
     db = SessionLocal()

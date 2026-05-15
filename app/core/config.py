@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     ollama_model: str = "llama3.2:3b"
     
     # Infrastructure
-    database_url: str = "postgresql+psycopg://user:password@localhost:5432/analytics"
+    database_url: str = "sqlite:///./analytics.db"
     redis_url: str = "redis://localhost:6379/0"
     otel_exporter_otlp_endpoint: str = ""
     

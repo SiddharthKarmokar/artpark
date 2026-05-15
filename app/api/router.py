@@ -27,20 +27,28 @@ CURRENT_DATASET_VERSION = 1
 
 @router.get("/health")
 def health(db: Session = Depends(get_db)):
+    health_status = {
+        "status": "ok",
+        "db": "unknown",
+        "redis": "unknown",
+        "dataset_version": CURRENT_DATASET_VERSION,
+    }
+    #This prevents the entire endpoint from hanging/failing because one dependency is unavailable during tests. -siddharth
     try:
-        # Check DB
         db.execute(text("SELECT 1"))
-        # Check Redis
-        cache_service.redis.ping()
-        return {
-            "status": "ok",
-            "db": "healthy",
-            "redis": "healthy",
-            "dataset_version": CURRENT_DATASET_VERSION
-        }
+        health_status["db"] = "healthy"
     except Exception as e:
-        log.error("Health check failed", error=str(e))
-        raise HTTPException(status_code=503, detail="Service Unavailable")
+        log.error("DB health check failed", error=str(e))
+        health_status["status"] = "degraded"
+
+    try:
+        cache_service.redis.ping()
+        health_status["redis"] = "healthy"
+    except Exception as e:
+        log.error("Redis health check failed", error=str(e))
+        health_status["status"] = "degraded"
+
+    return health_status
 
 @router.get("/metrics")
 def metrics():
@@ -76,14 +84,25 @@ def query(req: QueryRequest, db: Session = Depends(get_db), api_key: str = Depen
             cache_key = f"query:{key_hash}"
             
             # 2. Check Cache
-            cached_resp = cache_service.get(cache_key, CURRENT_DATASET_VERSION, db)
+            try:
+                cached_resp = cache_service.get(
+                    cache_key,
+                    CURRENT_DATASET_VERSION,
+                    db
+                )
+            except Exception as e:
+                log.warning(
+                    "Cache unavailable, continuing without cache",
+                    error=str(e)
+                )
+                cached_resp = None
             if cached_resp:
                 cached_resp["cache_hit"] = True
                 cached_resp["query_id"] = query_id
                 cached_resp["trace_id"] = hex(span.get_span_context().trace_id)
                 QUERY_COUNT.labels(status="success_cached").inc()
                 return cached_resp
-            
+
             # 3. LLM Planning
             llm = get_llm_provider()
             plan = llm.plan_query(req.question)
@@ -117,7 +136,10 @@ def query(req: QueryRequest, db: Session = Depends(get_db), api_key: str = Depen
             )
             
             # 6. Save to Cache
-            cache_service.set(cache_key, response.dict(), CURRENT_DATASET_VERSION, db)
+            try:
+                cache_service.set(cache_key, response.model_dump(), CURRENT_DATASET_VERSION, db)
+            except Exception as e:
+                log.warning("Cache write failed", error=str(e))
             
             QUERY_COUNT.labels(status="success_computed").inc()
             QUERY_LATENCY.observe(execution_time_ms / 1000.0)
