@@ -1,0 +1,9 @@
+# Force all text files to be normalized to LF on check-in
+* text=auto
+
+# Ensure Windows batch files always use CRLF
+*.bat text eol=crlf
+
+# Treat all .jpg files as binary (no diffs)
+*.jpg binary
+*.png binary

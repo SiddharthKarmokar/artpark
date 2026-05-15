@@ -1,0 +1,6 @@
+.env
+.venv/
+__pycache__/
+**/__pycache__/
+site/
+GenAI_DevOps_Intern_Technical_Test.pdf

@@ -1,0 +1,42 @@
+[project]
+name = "tabular-analytics"
+version = "0.1.0"
+description = "Natural-language tabular analytics service"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic-settings",
+    "requests",
+    "sqlalchemy",
+    "psycopg[binary]",
+    "redis",
+    "structlog",
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "opentelemetry-instrumentation-fastapi",
+    "opentelemetry-instrumentation-sqlalchemy",
+    "opentelemetry-instrumentation-redis",
+    "opentelemetry-exporter-otlp",
+    "prometheus-client"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+    "httpx",
+    "ruff",
+    "mypy",
+    "mkdocs-material",
+    "mkdocstrings[python]"
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
